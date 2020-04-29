@@ -6,7 +6,11 @@ payments as (
     select * from {{ ref('stg_payments') }}
 )
 
-SELECT orders.customer_id, orders.order_id, payments.amount
-FROM orders
-LEFT OUTER JOIN payments
-ON orders.order_id = payments.order_id
+select 
+    orders.customer_id, 
+    orders.order_id, 
+    SUM(payments.amount) as amount
+from orders
+left join payments using(order_id)
+group by 
+    1, 2
